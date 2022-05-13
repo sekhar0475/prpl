@@ -1,0 +1,136 @@
+<!-- breadcrumb start -->
+<section class="booking_breadcrumb_sec">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5">
+                <div>
+                    <mat-toolbar class="breadcrumbs_nav">
+                        <mat-toolbar-row class="breadcrumbs">
+                            <span><a skipLocationChange routerLink="/asso_delivery-contract/asso_delivery">Dashboard</a></span>
+                            <mat-icon class="example-icon breadcrumbs_icon" aria-hidden="false" aria-label="Example heart icon">
+                                arrow_right
+                            </mat-icon>
+                            <span><a skipLocationChange routerLink="asso_delivery-contract/asso_delivery">Contracts</a></span>
+                            <mat-icon class="example-icon breadcrumbs_icon" aria-hidden="false" aria-label="Example heart icon">
+                                arrow_right
+                            </mat-icon>
+                            <span>Associate Contract</span>
+                        </mat-toolbar-row>
+                    </mat-toolbar>
+                    <h2>Delivery Associate Contract</h2>
+                </div>
+            </div>
+            <div class="col-md-7 mt_40 mob_hide progress_bar_booking">
+                <stepper></stepper>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb end -->
+
+<!-- msa 114 start -->
+<section class="req_table_sec booking_msa_sec mat_radio_btn_mb_0">
+    <div class="container-fluid">
+        <div class="booking_card padding_0">
+            <!--  Display Header -->
+            <app-header-data></app-header-data>
+
+            <!-- Customer Specific Payment -->
+            <div class="d-flex payment-title-container">
+                <div class="d-flex">
+                    <mat-label><strong>Customer Specific Payment</strong></mat-label>
+                    <div class="radio-group">
+                        <mat-radio-group name="rrFlag" [disabled]="customerSpecificPaymentRadioDisabled" [(ngModel)]="customerSpecificPayment" (ngModelChange)="!isPCD ? CustomerSpecfificPaymentSelection($event): false">
+                            <mat-radio-button [value]="1" style="margin-right: 10px;">Yes
+                            </mat-radio-button>
+                            <mat-radio-button selected [value]="0">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div *ngIf="customerSpecificPayment" class="d-flex" style="margin-top: 10px;">
+                    <button [matTooltip]="item.attr1" class="payment-button" [ngClass]="item.active ? 'active': ''" *ngFor="let item of contractCustomerList;let idx=index" (click)="!isPCD ? customerSlectionchange(idx) : false"> 
+                        <span class="customer-name">{{item.attr1}}</span>
+                        <mat-icon *ngIf="idx !== 0 || isPCD" class="delete-icon" [ngClass]="item.active ? 'active': ''" (click)="deleteCustomer($event,idx, item)">delete</mat-icon>
+                    </button>
+                    <mat-icon *ngIf="!isPCD" class="plus-icon" (click)="addCustomer()">add_circle</mat-icon>
+                </div>
+            </div>
+            <mat-accordion multi="true">
+                <div class="paddingLR_10" *ngIf="contractData && contractData.scheduledDeliveryFlag">
+                    <!--  #schedule (opened)="openSchedule(schedule)" (closed)="closeSchedule(schedule)" [expanded]="true"  -->
+                    <mat-expansion-panel #schedule class="box_shadow_none" [expanded]="true">
+                        <mat-expansion-panel-header class="collapse_panel_header">
+                            <mat-panel-title>
+                                Scheduled Payout
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-scheduled-payout [paymentCommercialData]="paymentCommercialSchData" [activeTab]="activeTab" 
+                        [isPCD]="isPCD" [paymentcomercialMasterData]="paymentcomercialSchMasterData" [activeTabIndex]="activeTabIndex"
+                        [contractCustomerList]="contractCustomerList" [currTabIndex] = "currTabIndex" [contractData]="contractData"
+                        [pannel]="schedule" [expendPannel]="safex" [defPannel]="gen" [paymentCommercialRefData]="paymentCommercialRefData"
+                            (getCommercial)="childToParent($event)" [vehicleList]='vehicleList' [indexName]='1'>
+                        </app-scheduled-payout>
+                    </mat-expansion-panel>
+                </div>
+                <div class="paddingLR_10" *ngIf="contractData && contractData.safextDeliveryFlag">
+                    <!-- [expanded]="true" -->
+                    <mat-expansion-panel class="box_shadow_none" #safex [expanded]="contractData.scheduledDeliveryFlag ? false : true">
+                        <mat-expansion-panel-header class="collapse_panel_header">
+                            <mat-panel-title>
+                                Safextension Payout
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="paddingLR_10">
+                            <app-scheduled-payout [paymentCommercialData]="paymentCommercialSefData" [activeTab]="activeTab" 
+                            [isPCD]="isPCD" [paymentcomercialMasterData]="paymentcomercialSefMasterData" [activeTabIndex]="activeTabIndex"
+                            [contractCustomerList]="contractCustomerList" [currTabIndex] = "currTabIndex" [contractData]="contractData"
+                            [pannel]="safex" [expendPannel]="schedule" [defPannel]="gen" [paymentCommercialRefData]="paymentCommercialRefData"
+                                (getCommercial)="childToParent($event)" [vehicleList]='vehicleList' [indexName]='2'>
+                            </app-scheduled-payout>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+                <div class="paddingLR_10" *ngIf="contractData">
+                    <!-- [disabled]="!(paymentCommercialSchData.id || paymentCommercialSefData.id)"  [expanded]="true"  -->
+                    <mat-expansion-panel class="box_shadow_none" #gen>
+                        <mat-expansion-panel-header class="collapse_panel_header">
+                            <mat-panel-title>
+                                General Terms
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="paddingLR_10">
+                            <div>
+                                <app-payment-general-terms [contractData]='contractData'></app-payment-general-terms>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+            </mat-accordion>
+            <div class="paddingLR_10">
+                <hr>
+                <div class="row">
+                    <div *ngxPermissionsOnly="['SCHEDULED PAYOUT_CREATE','SCHEDULED PAYOUT_UPDATE','SAFEXTENSION PAYOUT_CREATE','SAFEXTENSION PAYOUT_UPDATE']">
+                        <div class="col-md-12 text-center mtb_30" *ngxPermissionsOnly="['GENERAL TERMS_CREATE','GENERAL TERMS_UPDATE']">
+                            <button mat-button class="white-button" [disabled]="(!genValidation?.genTermForm?.form.valid || (genValidation?.paymentCommercialData?.exgratiaType === 'CLAUSE' 
+        && genValidation?.paymentCommercialData?.exgratiaFlag == 1 && !genValidation?.clauseSlabForm?.form.valid))" (click)="savePaymentGeneralTerms(1)">Save as Draft </button>
+                            <button mat-button class="theme-button ml_15" [disabled]="(!genValidation?.genTermForm?.form.valid || (genValidation?.paymentCommercialData?.exgratiaType === 'CLAUSE' 
+        && genValidation?.paymentCommercialData?.exgratiaFlag == 1 && !genValidation?.clauseSlabForm?.form.valid))" (click)="savePaymentGeneralTerms(0)">Next </button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-center mtb_30" *ngxPermissionsExcept="['SCHEDULED PAYOUT_CREATE','SCHEDULED PAYOUT_UPDATE','SAFEXTENSION PAYOUT_CREATE','SAFEXTENSION PAYOUT_UPDATE']">
+                        <button class="theme-button" type="button" mat-raised-button color="primary" (click)="nextReadMode()">NEXT</button>
+                    </div>
+                    <ng-container *ngxPermissionsOnly="['SCHEDULED PAYOUT_CREATE','SCHEDULED PAYOUT_UPDATE','SAFEXTENSION PAYOUT_CREATE','SAFEXTENSION PAYOUT_UPDATE']">
+                        <div class="col-md-12 text-center mtb_30" *ngxPermissionsExcept="['GENERAL TERMS_CREATE','GENERAL TERMS_UPDATE']">
+                            <button class="theme-button" type="button" mat-raised-button color="primary" (click)="nextReadMode()">NEXT</button>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- msa 114 end -->
+
+<ngx-spinner id="spinner" size="large" type="ball-spin-clockwise">
+</ngx-spinner>

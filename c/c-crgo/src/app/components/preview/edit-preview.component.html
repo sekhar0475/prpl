@@ -1,0 +1,712 @@
+<div class="modal-container">
+  <div class="row">
+    <div class="col-md-2">
+      <h5 class="sub_heading"><strong>Preview For Edited Data</strong></h5>
+    </div>
+    <div class="col-md-3">
+      <div class="row">
+        <div class="col-md-6" (click)="sendEmail()">
+          <p><img class="preview_email_icon" src="../assets/images/envelope.png" alt="email">
+            <strong>Email</strong>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <button
+            style="cursor: pointer !important;width: 12rem;font-size: 2.8rem; border: none; background: transparent;left:0; top: 0.7rem; display: flex;"
+            [useExistingCss]="true" printTitle="{{previewList?.companyName}}" printSectionId="previewContent" ngxPrint>
+            <img alt="img" src="../assets/images/printer.png" style="margin-right: 7px;">
+            <p style="font-weight: bold;">Print</p>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1 col-sm-offset-5 text-right"
+      *ngxPermissionsOnly="['VIEW CONTRACT_CREATE','VIEW CONTRACT_UPDATE']">
+      <button mat-button class="theme-button" (click)="submitContract()">Submit</button>
+    </div>
+  </div>
+  <mat-icon class="modals_cancel_btn" (click)="onCloseEditPreview()">close</mat-icon>
+  <hr class="border_row">
+</div>
+<section class="preview_sec preview_popup">
+  <div id="previewContent" #previewContent>
+    <div class="preview_main_card pd_0_20">
+      <section class="mgsg_print_sec">
+      </section>
+      <section class="preview_sec_1 width-800">
+        <div class="row">
+          <div class="col-md-6">
+            <h3><strong>Cargo Associate Contract</strong></h3>
+          </div>
+          <div class="col-md-6 text-right">
+            <h3>Preview Generated on: {{currDate | date: 'dd MMM yy'}}</h3>
+          </div>
+        </div>
+      </section>
+      <section class="preview_sec_2 width-800">
+        <div class="row">
+          <div class="col-md-6">
+            <h3 class="font-thin break-word"><strong class="strong-text">Organisation Name:</strong>
+              {{previewList?.companyName == null ? 'NA' : previewList?.companyName}}</h3>
+            <h3 class="font-thin break-word"><strong class="strong-text">Associate Category:</strong>
+              {{previewList?.asscoCtrgy == null ? 'NA' : previewList?.asscoCtrgy}}</h3>
+          </div>
+          <div class="col-md-6">
+            <div class="text_right">
+              <h3 class="font-thin break-word"><strong class="strong-text">Contract Code:</strong>
+                {{previewList?.cntrCode == null ? 'NA' : previewList?.cntrCode}}</h3>
+              <h3 class="font-thin break-word"><strong class="strong-text">W.E.F:</strong>
+                {{previewList?.wefDate == null ? 'NA' : previewList?.wefDate | date: 'dd/MM/yyyy'}}</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="preview_sec_3 width-800">
+        <h3><strong>Contract Details</strong></h3>
+        <div class="row">
+          <div class="col-md-5">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"><strong>Cargo Associate
+                    Type</strong></div>
+                <div class="mat-cell preview_table_bg_2 flex4 flex4">
+                  {{previewList?.lkpAssocCargoTypeName == null ? 'NA' : previewList?.lkpAssocCargoTypeName}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"><strong>End Date</strong></div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.expDt == null ? 'NA' : previewList?.expDt | date: 'dd/MM/yyyy'}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">Status</div>
+                <div class="mat-cell preview_table_bg_2 flex4">{{previewList?.cntrctStatus == null ? 'NA' :
+                  previewList?.cntrctStatus}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 col-md-offset-2">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"><strong>Start Date</strong>
+                </div>
+                <div class="mat-cell preview_table_bg_2 flex4 flex4">
+                  {{previewList?.effectiveDt == null ? 'NA' : previewList?.effectiveDt | date: 'dd/MM/yyyy'}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">Billing Cycle</div>
+                <div class="mat-cell preview_table_bg_2 flex4 flex4">{{previewList?.billingCyle == null ? 'NA' :
+                  previewList?.billingCyle}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-------Contract Details End ----->
+
+      <!--------- Branch Allocation Start ---------->
+      <section class="preview_sec_3 preview_sec_4 width-800" *ngIf="previewList?.branchAllocationPrev.length > 0">
+        <h3><strong>Allocation</strong></h3>
+        <h3 style="font-weight: bold;">Branch</h3>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="mat-table prvw_tbl preview_table_2">
+              <div class="mat-row align_item_top border_none flex-box flex-box">
+                <div class="mat-cell pab_table_head green_th flex1 width-200"><strong>Branch Name</strong></div>
+                <div class="mat-cell pab_table_head green_th flex2 width-200"><strong>Branch Type</strong></div>
+                <div class="mat-cell pab_table_head green_th flex3 width-200"><strong>Effective Date</strong></div>
+                <div class="mat-cell pab_table_head green_th flex4 width-200"><strong>Expiry Date</strong></div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box"
+                *ngFor="let branch of previewList?.branchAllocationPrev; let i = index"
+                style="page-break-inside: avoid;">
+                <div class="mat-cell pab_table_dis1 flex1 pab_table_dis2 green_th width-200">
+                  {{branch?.branchName == null ? 'NA' : branch?.branchName}}</div>
+                <div class="mat-cell pab_table_dis1 flex2 width-200">{{branch?.branchType == null ? 'NA' :
+                  branch?.branchType}}</div>
+                <div class="mat-cell pab_table_dis1 flex3 width-200">{{branch?.efftvDate == null ? 'NA' :
+                  branch?.efftvDate | date: 'dd/MM/yyyy'}}
+                </div>
+                <div class="mat-cell pab_table_dis1 flex4 width-200">{{branch?.exprDate == null ? 'NA' :
+                  branch?.exprDate | date: 'dd/MM/yyyy'}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--------- Branch Allocation End ---------->
+
+      <!--------- Payment Terns Start ---------->
+      <section class="preview_sec_3 preview_sec_4 width-800"
+        *ngIf="previewList?.paymentTermsPrev?.id || graciaList.length > 0 || mgList.length > 0">
+        <h3 style="page-break-inside: avoid;"><strong>Payment Terms</strong></h3>
+        <div class="row" *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName" style="page-break-inside: avoid;">
+          <div class="col-md-5">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"><strong>Payment Based
+                    On</strong></div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == null ? 'NA' :
+                  previewList?.paymentTermsPrev?.lkpCargoPayoutOptName}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"
+                  *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == 'RATE PER TON'">
+                  <strong>Rate Per Ton</strong>
+                </div>
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"
+                  *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == 'RATE PER PERSON'">
+                  <strong>Rate Per Person</strong>
+                </div>
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"
+                  *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == 'RATE PER VEHICLE'">
+                  <strong>Rate Per Vehicle</strong>
+                </div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  ₹{{previewList?.paymentTermsPrev?.price == null ? '0' : previewList?.paymentTermsPrev?.price}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 col-md-offset-2">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"><strong>Weight Type</strong>
+                </div>
+                <div class="mat-cell preview_table_bg_2 flex4">{{previewList?.paymentTermsPrev?.wtType == null ? 'NA' :
+                  previewList?.paymentTermsPrev?.wtType}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="preview_sec_3 preview_sec_4 preview_sec_5 width-800"
+        *ngIf="previewList?.paymentTermsPrev?.exgratiaFlag || graciaList.length > 0">
+        <h3 style="page-break-inside: avoid;"><strong>Ex - Gratia</strong></h3>
+        <div class="row pb_15" *ngIf="previewList?.paymentTermsPrev?.id" style="page-break-inside: avoid;">
+          <div class="col-md-5">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3"><strong>Ex - Gratia Applicable</strong>
+                </div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.paymentTermsPrev?.exgratiaFlag === 1 ? 'YES' : 'NO'}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="graciaList.length > 0">
+          <div class="col-md-12">
+            <div class="mat-table prvw_tbl  preview_table_2">
+              <div class="mat-row align_item_top border_none flex-box" style="page-break-inside: avoid;">
+                <div class="mat-cell pab_table_head flex1 width-200"><strong>Branch</strong></div>
+                <div class="mat-cell pab_table_head flex2 width-200"><strong>Ex - Gratia Amount</strong></div>
+                <div class="mat-cell pab_table_head flex3 width-200"><strong>Reason</strong></div>
+                <div class="mat-cell pab_table_head flex4 width-100"><strong>Start Date</strong></div>
+                <div class="mat-cell pab_table_head flex5 width-100"><strong>End Date</strong></div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box" *ngFor="let gratia of graciaList; let i = index"
+                style="page-break-inside: avoid;">
+                <div class="mat-cell pab_table_dis1 flex1 pab_table_dis2 width-200">{{gratia.branchName == null ? 'NA' :
+                  gratia.branchName}}</div>
+                <div class="mat-cell pab_table_dis1 flex2 width-200">₹ {{gratia.amt == null ? '0' : gratia.amt}}</div>
+                <div class="mat-cell pab_table_dis1 flex3 width-200">{{gratia.reason == null ? 'NA' : gratia.reason}}
+                </div>
+                <div class="mat-cell pab_table_dis1 flex4 width-100">{{gratia.efftvDate == null ? 'NA' :
+                  gratia.efftvDate | date: 'dd/MM/yyyy'}}
+                </div>
+                <div class="mat-cell pab_table_dis1 flex5 width-100">{{gratia.exprDate == null ? 'NA' : gratia.exprDate
+                  | date: 'dd/MM/yyyy'}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+      <section class="preview_sec_3 preview_sec_4 preview_sec_5 width-800"
+        *ngIf="previewList?.paymentTermsPrev?.mgFlag || mgList.length > 0">
+        <h3 style="page-break-inside: avoid;"><strong>Minimum Guarantee</strong></h3>
+        <div class="row pb_15" *ngIf="previewList?.paymentTermsPrev?.id" style="page-break-inside: avoid;">
+          <div class="col-md-5">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"><strong>MG Applicable</strong>
+                </div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.paymentTermsPrev?.mgFlag === 1 ? 'YES' : 'NO'}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="mgList.length > 0">
+          <div class="col-md-12">
+            <div class="mat-table prvw_tbl  preview_table_2">
+              <div class="mat-row align_item_top border_none flex-box" style="page-break-inside: avoid;">
+                <div class="mat-cell pab_table_head green_th width-200"><strong>Branch</strong></div>
+                <div class="mat-cell pab_table_head green_th width-200"><strong>MG Amount</strong></div>
+                <div class="mat-cell pab_table_head green_th width-200"><strong>Reason</strong></div>
+                <div class="mat-cell pab_table_head green_th width-100"><strong>Start Date</strong></div>
+                <div class="mat-cell pab_table_head green_th width-100"><strong>End Date</strong></div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box" *ngFor="let gratia of mgList; let i = index"
+                style="page-break-inside: avoid;">
+                <div class="mat-cell pab_table_dis1 pab_table_dis2 width-200">{{gratia?.branchName == null ? 'NA' :
+                  gratia?.branchName}}</div>
+                <div class="mat-cell pab_table_dis1 width-200">₹ {{gratia?.amt == null ? '0' : gratia?.amt}}</div>
+                <div class="mat-cell pab_table_dis1 width-200">{{gratia?.reason == null ? 'NA' : gratia?.reason}}</div>
+                <div class="mat-cell pab_table_dis1 width-100">{{gratia?.efftvDate == null ? 'NA' : gratia?.efftvDate |
+                  date: 'dd/MM/yyyy'}}</div>
+                <div class="mat-cell pab_table_dis1 width-100">{{gratia?.exprDate == null ? 'NA' : gratia?.exprDate |
+                  date: 'dd/MM/yyyy'}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview_sec_3 preview_sec_4 preview_sec_5 width-800" *ngIf="previewList?.paymentTermsPrev?.id">
+        <div class="row" style="page-break-inside: avoid;">
+          <div class="col-md-5">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3">Promotion Applicable</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.paymentTermsPrev?.promoFlag === 1 ? 'YES' : 'NO'}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3">Remarks</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.paymentTermsPrev?.addtnlExpnsRemark ? previewList?.paymentTermsPrev?.addtnlExpnsRemark
+                  : 'NA'}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 col-md-offset-2">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3">Additional Expense</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.paymentTermsPrev?.addtnlExpnsFlag === 1 ? 'YES' : 'NO'}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!---------Payment Terms End  ---------->
+
+      <!--------- Deductions Start ---------->
+      <section class="preview_sec_3 preview_sec_4 width-800"
+        *ngIf="previewList?.cargoDeductionPrev?.id || previewList?.cargoDeductionPrev?.cargoSlaList.length > 0">
+        <h3 style="page-break-inside: avoid;"><strong>Deductions</strong></h3>
+        <div class="row payment_base_t" *ngIf="previewList?.cargoDeductionPrev?.cargoSlaList.length > 0">
+          <div class="col-md-9">
+            <div class="mat-table prvw_tbl  preview_table_2" style="page-break-inside: avoid;">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell pab_table_head green_th"><strong>Vehicle Type</strong></div>
+                <div class="mat-cell pab_table_head green_th"><strong>Loading Time</strong></div>
+                <div class="mat-cell pab_table_head green_th"><strong>Unloading Time</strong></div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box"
+                *ngFor="let sla of previewList?.cargoDeductionPrev?.cargoSlaList; let i = index"
+                style="page-break-inside: avoid;">
+                <div class="mat-cell pab_table_dis1 pab_table_dis2">{{sla.vehicleType == null ? 'NA' : sla.vehicleType}}
+                </div>
+                <div class="mat-cell pab_table_dis1">{{sla.loadingTime == null ? 'NA' : sla.loadingTime}}</div>
+                <div class="mat-cell pab_table_dis1">{{sla.unloadingTime == null ? 'NA' : sla.unloadingTime}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="previewList?.cargoDeductionPrev?.id" style="page-break-inside: avoid;">
+          <div class="col-md-5">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">Mishandling Charges</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.cargoDeductionPrev?.mishandlingFlag === 1 ? 'YES' : 'NO'}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">Schedule Late Penalty</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.cargoDeductionPrev?.schLatePnltyFlag === 1 ? 'YES' : 'NO'}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 col-md-offset-2">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"
+                  style="word-break: break-word !important; width:13rem;">Remarks</div>
+                <div class="mat-cell preview_table_bg_2 flex4" style="word-break: break-word !important;">
+                  {{previewList?.cargoDeductionPrev?.mishandlingRemark ?
+                  previewList?.cargoDeductionPrev?.mishandlingRemark : 'NA'}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th"
+                  style="word-break: break-word !important; width:13rem;">Remarks</div>
+                <div class="mat-cell preview_table_bg_2 flex4" style="word-break: break-word !important;">
+                  {{previewList?.cargoDeductionPrev?.schLatePnltyRemark ?
+                  previewList?.cargoDeductionPrev?.schLatePnltyRemark : 'NA' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview_sec_3 preview_sec_4 preview_sec_5 width-800"
+        *ngIf="previewList?.cargoDeductionPrev?.advncDedctnAmtFlag">
+        <h3 style="page-break-inside: avoid;"><strong>Advance Amount Applicable</strong></h3>
+        <div class="row" style="page-break-inside: avoid;">
+          <div class="col-md-5">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">Advance Amount Applicable</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.cargoDeductionPrev?.advncDedctnAmtFlag ===1 ? 'YES' : 'NO'}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box"
+                *ngIf="previewList?.cargoDeductionPrev?.advncDedctnAmtFlag==1">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">Start Date</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.cargoDeductionPrev?.advncDedctnAmtFromDt == null ? 'NA' :
+                  previewList?.cargoDeductionPrev?.advncDedctnAmtFromDt | date: 'dd/MM/yyyy'}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 col-md-offset-2" *ngIf="previewList?.cargoDeductionPrev?.advncDedctnAmtFlag==1">
+            <div class="mat-table prvw_tbl  preview_table_1">
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">Advance Amount to be Deducted
+                </div>
+                <div class="mat-cell preview_table_bg_2 flex4">₹
+                  {{previewList?.cargoDeductionPrev?.advncDedctnAmt == null ? '0' :
+                  previewList?.cargoDeductionPrev?.advncDedctnAmt}}</div>
+              </div>
+              <div class="mat-row align_item_top border_none flex-box">
+                <div class="mat-cell preview_table_bg_1 flex3 green_th">End Date</div>
+                <div class="mat-cell preview_table_bg_2 flex4">
+                  {{previewList?.cargoDeductionPrev?.advncDedctnAmtToDt == null ? 'NA' :
+                  previewList?.cargoDeductionPrev?.advncDedctnAmtToD | date: 'dd/MM/yyyy'}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="billingHr">
+
+      </section>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- for print only naresh -->
+<div class="previewHeading" style=" display: none;" id="printing">
+  <h2>Cargo Associate Contract</h2>
+  <!-- customer details -->
+  <table aria-describedby="table" class="table_edit" id="Cargo Associate Contract">
+    <tbody>
+      <tr>
+        <th scope="col" style="width:400px">-</th>
+        <th scope="col" style="width:400px">--</th>
+      </tr>
+      <tr>
+        <td style="width:400px">Organisation Name: {{previewList?.companyName == null ? 'NA' : previewList?.companyName }}</td>
+        <td style="width:400px"> Contract Code: {{previewList?.cntrCode == null ? 'NA' : previewList?.cntrCode}}</td>
+      </tr>
+      <tr>
+        <td style="width:400px">Associate Category:{{previewList?.asscoCtrgy == null ? 'NA' : previewList?.asscoCtrgy}}
+        </td>
+        <td style="width:400px"> W.E.F: {{previewList?.wefDate == null ? 'NA' : previewList?.wefDate | date:
+          'dd/MM/yyyy'}} </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- end customer details -->
+  <!-- Contract Details -->
+  <table aria-describedby="table" class="table_edit fourCol" id="Contract Details">
+    <tbody>
+      <tr>
+        <th scope="col" style="width:400px">-</th>
+        <th scope="col" style="width:400px">--</th>
+        <th scope="col" style="width:400px">---</th>
+        <th scope="col" style="width:400px">----</th>
+      </tr>
+      <tr>
+        <td>Cargo Associate Type</td>
+        <td>{{previewList?.lkpAssocCargoTypeName == null ? 'NA' : previewList?.lkpAssocCargoTypeName}}</td>
+        <td><strong>Start Date</strong></td>
+        <td>{{previewList?.effectiveDt == null ? 'NA' : previewList?.effectiveDt | date: 'dd/MM/yyyy'}}</td>
+      </tr>
+      <tr>
+        <td>End Date</td>
+        <td>{{previewList?.expDt == null ? 'NA' : previewList?.expDt | date: 'dd/MM/yyyy'}}</td>
+        <td>Billing Cycle</td>
+        <td>{{previewList?.billingCyle == null ? 'NA' : previewList?.billingCyle}}</td>
+      </tr>
+      <tr>
+        <td>Status</td>
+        <td>{{previewList?.cntrctStatus === 'EDIT' ? 'ACTIVE' : previewList?.cntrctStatus}}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- end Contract Details -->
+  <!--------- Branch Allocation Start ---------->
+  <table aria-describedby="table" class="table_edit branch" id="Allocation" data-h5="Branch" data-heading="show">
+    <tbody>
+      <tr>
+        <th scope="col" style="width:400px">Branch Name</th>
+        <th scope="col" style="width:400px">Branch Type</th>
+        <th scope="col" style="width:400px">Effective Date</th>
+        <th scope="col" style="width:400px">Expiry Date</th>
+      </tr>
+      <tr *ngFor="let branch of previewList?.branchAllocationPrev; let i = index">
+        <td>{{branch?.branchName == null ? 'NA' : branch?.branchName}}</td>
+        <td>{{branch?.branchType == null ? 'NA' : branch?.branchType }}</td>
+        <td>{{branch?.efftvDate == null ? 'NA' : branch?.efftvDate | date: 'dd/MM/yyyy'}}</td>
+        <td>{{branch?.exprDate == null ? 'NA' : branch?.exprDate | date: 'dd/MM/yyyy'}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <!--------- Branch Allocation End ---------->
+  <!--------- Payment Terns Start ---------->
+  <section *ngIf="previewList?.paymentTermsPrev?.id || graciaList.length > 0 || mgList.length > 0">
+    <table aria-describedby="table" class="table_edit fourCol" id="Payment Terms"
+      *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName">
+      <tbody>
+        <tr>
+          <th scope="col" style="width:400px">-</th>
+          <th scope="col" style="width:400px">--</th>
+          <th scope="col" style="width:400px">---</th>
+          <th scope="col" style="width:400px">----</th>
+        </tr>
+        <tr>
+          <td>Payment Based On</td>
+          <td>{{previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == null ? 'NA' :
+            previewList?.paymentTermsPrev?.lkpCargoPayoutOptName}}</td>
+          <td><strong>Weight Type</strong></td>
+          <td>{{previewList?.paymentTermsPrev?.wtType == null ? 'NA' : previewList?.paymentTermsPrev?.wtType}}</td>
+        </tr>
+        <tr>
+          <td>
+            <div *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == 'RATE PER TON'"><strong>Rate Per
+                Ton</strong></div>
+            <div *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == 'RATE PER PERSON'"><strong>Rate Per
+                Person</strong></div>
+            <div *ngIf="previewList?.paymentTermsPrev?.lkpCargoPayoutOptName == 'RATE PER VEHICLE'"><strong>Rate Per
+                Vehicle</strong></div>
+          </td>
+          <td> RS.{{previewList?.paymentTermsPrev?.price == null ? '0' : previewList?.paymentTermsPrev?.price}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <!-- Ex - Gratia -->
+  <section *ngIf="previewList?.paymentTermsPrev?.exgratiaFlag || graciaList.length > 0"></section>
+  <table aria-describedby="table" class="table_edit fourCol" id="Ex - Gratia">
+    <tbody>
+      <tr>
+        <th scope="col" style="width:400px">-</th>
+        <th scope="col" style="width:400px">--</th>
+        <th scope="col" style="width:400px">---</th>
+        <th scope="col" style="width:400px">----</th>
+      </tr>
+      <tr>
+        <td>Ex - Gratia Applicable</td>
+        <td>{{previewList?.paymentTermsPrev?.exgratiaFlag === 1 ? 'YES' : 'NO'}}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- end Ex - Gratia -->
+  <!-- Branch -->
+  <table aria-describedby="table" data-page="newPage" class="table_edit fiveCol" id="`" data-heading="show"
+    *ngIf="graciaList.length > 0">
+    <tbody>
+      <tr>
+        <th scope="col">Branch</th>
+        <th scope="col">Ex - Gratia Amount</th>
+        <th scope="col">Reason</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+      </tr>
+      <tr *ngFor="let gratia of graciaList; let i = index">
+        <td>{{gratia.branchName == null ? 'NA' : gratia.branchName}}</td>
+        <td>Rs. {{gratia.amt == null ? '0' : gratia.amt}}</td>
+        <td>{{gratia.reason == null ? 'NA' : gratia.reason}}</td>
+        <td>{{gratia.efftvDate == null ? 'NA' : gratia.efftvDate | date: 'dd/MM/yyyy'}}</td>
+        <td>{{gratia.exprDate == null ? 'NA' : gratia.exprDate | date: 'dd/MM/yyyy'}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- end Branch -->
+  <!-- minium Guarantee -->
+  <table aria-describedby="table" class="table_edit fourCol h5" id="Minimum Guarantee"
+    *ngIf="previewList?.paymentTermsPrev?.mgFlag || mgList.length > 0">
+    <tbody>
+      <tr>
+        <th scope="col">-</th>
+        <th scope="col">-</th>
+        <th scope="col">--</th>
+        <th scope="col">---</th>
+      </tr>
+      <tr>
+        <td>MG Applicable</td>
+        <td>{{previewList?.paymentTermsPrev?.mgFlag === 1 ? 'YES' : 'NO'}}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- end minium Guarantee -->
+  <!-- Branch -->
+  <table aria-describedby="table" class="table_edit fiveCol" data-heading="show" *ngIf="mgList.length > 0">
+    <tbody>
+      <tr>
+        <th scope="col">Branch</th>
+        <th scope="col">MG Amount</th>
+        <th scope="col">Reason</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+      </tr>
+      <tr *ngFor="let gratia of mgList; let i = index">
+        <td>{{gratia?.branchName == null ? 'NA' : gratia?.branchName }}</td>
+        <td>Rs. {{gratia?.amt == null ? '0' : gratia?.amt}}</td>
+        <td>{{gratia?.reason == null ? 'NA' : gratia?.reason }}</td>
+        <td>{{gratia?.efftvDate == null ? 'NA' : gratia?.efftvDate | date: 'dd/MM/yyyy'}}</td>
+        <td>{{gratia?.exprDate == null ? 'NA' : gratia?.exprDate | date: 'dd/MM/yyyy'}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- end Branch -->
+  <!-- Promotion applicable -->
+  <table aria-describedby="table" class="table_edit fourCol" *ngIf="previewList?.paymentTermsPrev?.id">
+    <tbody>
+      <tr>
+        <th scope="col">-</th>
+        <th scope="col">--</th>
+        <th scope="col">--</th>
+        <th scope="col">-</th>
+      </tr>
+      <tr>
+        <td>Promotion Applicable</td>
+        <td>{{previewList?.paymentTermsPrev?.promoFlag === 1 ? 'YES' : 'NO'}}</td>
+        <td>Additional Expense</td>
+        <td>{{previewList?.paymentTermsPrev?.addtnlExpnsFlag === 1 ? 'YES' : 'NO'}}</td>
+      </tr>
+      <tr>
+        <td>Remarks</td>
+        <td>{{previewList?.paymentTermsPrev?.addtnlExpnsRemark ? previewList?.paymentTermsPrev?.addtnlExpnsRemark : 'NA'
+          }}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- end Promotion applicable -->
+  <!---------Payment Terms End  ---------->
+  <section *ngIf="previewList?.cargoDeductionPrev?.id || previewList?.cargoDeductionPrev?.cargoSlaList.length > 0">
+
+    <table aria-describedby="table" class="table_edit threeCol" id="Deductions"
+      *ngIf="previewList?.cargoDeductionPrev?.cargoSlaList.length > 0">
+      <tbody>
+        <tr>
+          <th scope="col" style="width:400px">Vehicle Type</th>
+          <th scope="col" style="width:400px">Loading Time</th>
+          <th scope="col" style="width:400px">Unloading Time</th>
+        </tr>
+        <tr *ngFor="let sla of previewList?.cargoDeductionPrev?.cargoSlaList; let i = index">
+          <td>{{sla.vehicleType == null ? 'NA' : sla.vehicleType}}</td>
+          <td>{{sla.loadingTime == null ? 'NA' : sla.loadingTime}}</td>
+          <td>{{sla.unloadingTime == null ? 'NA' : sla.unloadingTime}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <div *ngIf="previewList?.cargoDeductionPrev?.id">
+      <table aria-describedby="table" class="table_edit fourCol"
+        id="{{ !previewList?.cargoDeductionPrev?.cargoSlaList.length > 0 ? 'Deductions': ''}}">
+        <tbody>
+          <tr>
+            <th scope="col" style="width:400px">-</th>
+            <th scope="col" style="width:400px">-</th>
+            <th scope="col" style="width:400px">--</th>
+            <th scope="col" style="width:400px">--</th>
+          </tr>
+          <tr>
+            <td>Mishandling Charges</td>
+            <td>{{previewList?.cargoDeductionPrev?.mishandlingFlag === 1 ? 'YES' : 'NO'}}</td>
+            <td>Remarks</td>
+            <td>{{previewList?.cargoDeductionPrev?.mishandlingRemark ?
+              previewList?.cargoDeductionPrev?.mishandlingRemark : 'NA' }}</td>
+          </tr>
+          <tr>
+            <td>Schedule Late Penalty</td>
+            <td>{{previewList?.cargoDeductionPrev?.schLatePnltyFlag === 1 ? 'YES' : 'NO'}}</td>
+            <td>Remarks</td>
+            <td>{{previewList?.cargoDeductionPrev?.schLatePnltyRemark ?
+              previewList?.cargoDeductionPrev?.schLatePnltyRemark : 'NA'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+
+
+  <table aria-describedby="table" class="table_edit fourCol h5" id="Advance Amount Applicable"
+    *ngIf="previewList?.cargoDeductionPrev?.advncDedctnAmtFlag">
+    <tbody>
+      <tr>
+        <th scope="col" style="width:400px">-</th>
+        <th scope="col" style="width:400px">-</th>
+        <th scope="col" style="width:400px">--</th>
+        <th scope="col" style="width:400px">--</th>
+      </tr>
+      <tr>
+        <td>Advance Amount Applicable</td>
+        <td>{{previewList?.cargoDeductionPrev?.advncDedctnAmtFlag ===1 ? 'YES' : 'NO'}}</td>
+        <td>
+          <div *ngIf="previewList?.cargoDeductionPrev?.advncDedctnAmtFlag==1"> Start Date </div>
+        </td>
+        <td>
+          <div *ngIf="previewList?.cargoDeductionPrev?.advncDedctnAmtFlag==1">
+            {{previewList?.cargoDeductionPrev?.advncDedctnAmtFromDt == null ? 'NA' :
+            previewList?.cargoDeductionPrev?.advncDedctnAmtFromDt | date: 'dd/MM/yyyy'}}</div>
+        </td>
+      </tr>
+      <tr *ngIf="previewList?.cargoDeductionPrev?.advncDedctnAmtFlag==1">
+        <td>Advance Amount to be Deducted</td>
+        <td>RS. {{previewList?.cargoDeductionPrev?.advncDedctnAmt == null ? '0' :
+          previewList?.cargoDeductionPrev?.advncDedctnAmt}}</td>
+        <td>End Date</td>
+        <td> {{previewList?.cargoDeductionPrev?.advncDedctnAmtToDt == null ? 'NA' :
+          previewList?.cargoDeductionPrev?.advncDedctnAmtToDt | date: 'dd/MM/yyyy'}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- end deduction -->
+</div>

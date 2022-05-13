@@ -1,0 +1,65 @@
+apiVersion: apps/v1    
+kind: Deployment    
+metadata:    
+  name: booking-associate-ui
+  namespace: uiapps
+  labels:    
+    app: booking-associate-ui  
+spec:    
+  replicas: 1    
+  selector:    
+    matchLabels:    
+      app: booking-associate-ui 
+  strategy:    
+    rollingUpdate:    
+      maxSurge: 25%    
+      maxUnavailable: 25%    
+    type: RollingUpdate    
+  template:    
+    metadata:    
+      labels:    
+        app: booking-associate-ui      
+    spec:    
+      containers:    
+      - image: 183454673550.dkr.ecr.ap-south-1.amazonaws.com/booking-associate-ui:BUILDNUMBER    
+        imagePullPolicy: Always    
+        name: booking-associate-ui   
+        ports:    
+        - containerPort: 80    
+          protocol: TCP    
+      imagePullSecrets:    
+      - name: aws-ecr  
+     
+--- 
+apiVersion: networking.istio.io/v1alpha3   
+kind: Gateway   
+metadata:   
+  name: booking-associate-ui 
+spec:   
+  selector:   
+    istio: pvt-ingressgateway # use istio default controller   
+  servers:   
+  - port:   
+      number: 80   
+      name: http   
+      protocol: HTTP   
+    hosts:   
+    - "*"   
+     
+--- 
+apiVersion: networking.istio.io/v1alpha3   
+kind: VirtualService   
+metadata:   
+  name: booking-associate-ui
+spec:   
+  hosts:   
+  - "*"   
+  gateways:   
+  - booking-associate-ui   
+  http:   
+  - match:   
+    route:   
+    - destination:   
+        host: booking-associate-ui  
+        port:   
+          number: 80

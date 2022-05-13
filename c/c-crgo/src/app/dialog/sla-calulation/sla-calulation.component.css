@@ -1,0 +1,15 @@
+.emi_calculation_modla {
+    margin-bottom: 4rem !important;
+}
+.activeVehicle {
+    background-color: #53af61 !important;
+    color: white !important;
+}
+
+.search_i{
+    top: .3rem;
+    left: 2.6rem!important;
+    position: absolute;
+    font-size: 1.8rem;
+    opacity: .5;
+}
